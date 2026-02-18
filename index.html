@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor de Código</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #333;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 70px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #4a4a4a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        
+        .title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #fff;
+        }
+        
+        /* Container principal */
+        .container {
+            display: flex;
+            height: calc(100vh - 70px);
+        }
+        
+        /* Painel esquerdo - Entrada */
+        .code-area {
+            flex: 1;
+            padding: 24px;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .code-header {
+            margin-bottom: 16px;
+            color: #888;
+            font-size: 14px;
+        }
+        
+        /* Seletor de Modo IA */
+        .mode-selector {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #252525;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        
+        .mode-selector label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .mode-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 8px 12px;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #aaa;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .mode-btn:hover {
+            background: #3a3a3a;
+        }
+        
+        .mode-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        /* Área de entrada de código */
+        .code-input {
+            flex: 1;
+            background: #252525;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 20px;
+            color: #e0e0e0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 15px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            transition: border 0.2s;
+        }
+        
+        .code-input:focus {
+            border-color: #666;
+        }
+        
+        .send-button {
+            margin-top: 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .send-button:hover {
+            background: #2563eb;
+        }
+        
+        .send-button:active {
+            transform: scale(0.98);
+        }
+        
+        /* Painel direito - Resposta */
+        .response-area {
+            flex: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .response-header {
+            margin-bottom: 16px;
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .response-output {
+            flex: 1;
+            background: #252525;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+        
+        /* Informações da IA */
+        .ai-info {
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 6px;
+            font-size: 13px;
+            color: #93c5fd;
+            display: none;
+        }
+        
+        /* Status */
+        .status {
+            margin-top: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .status.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .status.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #666;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .code-area {
+                border-right: none;
+                border-bottom: 1px solid #333;
+                height: 50vh;
+            }
+            
+            .response-area {
+                height: 40vh;
+            }
+            
+            .mode-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="icon.png" style="width: 50px; height: 50px; border-radius: 50%;">
+        <div class="title">DevTutor</div>
+    </div>
+    
+    <div class="container">
+        <!-- Painel Esquerdo: Entrada -->
+        <div class="code-area">
+            <div class="code-header">SEU CÓDIGO</div>
+            
+            <!-- Seletor de Modo IA -->
+            <div class="mode-selector">
+                <label> MODO IA:</label>
+                <div class="mode-buttons">
+                    <button class="mode-btn active" data-mode="local" onclick="selectMode('local')">
+                         Local
+                    </button>
+                    <button class="mode-btn" data-mode="online" onclick="selectMode('online')">
+                         Online
+                    </button>
+                </div>
+            </div>
+            
+            <textarea class="code-input" id="codeInput" placeholder="Faça sua pergunta aqui..."></textarea>
+            
+            <button class="send-button" onclick="analyzeCode()">
+                <span></span> Perguntar a IA
+            </button>
+            
+            <div class="status" id="status"></div>
+        </div>
+        
+        <!-- Painel Direito: Resposta -->
+        <div class="response-area">
+            
+            
+            <div class="response-output" id="responseOutput">
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <div style="font-size: 48px; margin-bottom: 16px;"></div>
+                    <p>Resposta da IA</p>
+                    <p style="font-size: 14px; margin-top: 8px;">
+                        Selecione o modo IA e clique em "Perguntar a IA"
+                    </p>
+                </div>
+            </div>
+            
+            <div class="ai-info" id="aiInfo"></div>
+            
+            <div class="loading" id="loading">
+                <div class="loading-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <p id="loadingText">Criando resposta...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração automática da URL
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:5000' 
+            : window.location.origin;
+        
+        // Variáveis globais
+        let currentMode = 'local';
+        
+        // Funções de UI
+        function selectMode(mode) {
+            currentMode = mode;
+            
+            // Atualizar botões
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.mode === mode) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Atualizar texto de loading
+            const loadingText = document.getElementById('loadingText');
+            if (mode === 'local') {
+                loadingText.textContent = 'Analisando com IA Local...';
+            } else if (mode === 'online') {
+                loadingText.textContent = 'Analisando com OpenAI...';
+            }
+            
+            showStatus(`Modo alterado: ${getModeName(mode)}`, 'success');
+        }
+        
+        function getModeName(mode) {
+            const modes = {
+                'local': ' IA Local',
+                'online': ' IA Online'
+            };
+            return modes[mode] || mode;
+        }
+        
+        function updateAIInfo(data) {
+            const aiInfo = document.getElementById('aiInfo');
+            if (data.provider) {
+                let info = ` ${data.provider}`;
+                if (data.response_time) {
+                    info += ` |  ${data.response_time}`;
+                }
+                if (data.tokens_used) {
+                    info += ` |  ${data.tokens_used} tokens`;
+                }
+
+                aiInfo.textContent = info;
+                aiInfo.style.display = 'block';
+            } else {
+                aiInfo.style.display = 'none';
+            }
+        }   
+        
+        // Função principal de análise
+        async function analyzeCode() {
+            const code = document.getElementById('codeInput').value.trim();
+            const output = document.getElementById('responseOutput');
+            const loading = document.getElementById('loading');
+            const status = document.getElementById('status');
+            const aiInfo = document.getElementById('aiInfo');
+            
+            if (!code) {
+                showStatus('Por favor, digite algum código primeiro.', 'error');
+                return;
+            }
+            
+            // Limpar status anterior
+            status.style.display = 'none';
+            aiInfo.style.display = 'none';
+            
+            // Mostrar loading
+            loading.style.display = 'block';
+            output.innerHTML = '';
+            
+            try {
+                const response = await fetch(`${API_URL}/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        mode: currentMode  // ← ENVIA O MODO SELECIONADO
+                    })
+                });
+                
+                const data = await response.json();
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    // Formatar resposta
+                    let formatted = data.analysis;
+                    
+                    // Formatação markdown
+                    formatted = formatted
+                        .replace(/^# (.*$)/gim, '<h3 style="color: #3b82f6; margin: 20px 0 10px 0; font-size: 1.2rem;">$1</h3>')
+                        .replace(/^## (.*$)/gim, '<h4 style="color: #60a5fa; margin: 15px 0 8px 0; font-size: 1.1rem;">$1</h4>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #fbbf24;">$1</strong>')
+                        .replace(/\n/g, '<br>')
+                        .replace(/```([\s\S]*?)```/gs, '<pre style="background: #1f2937; padding: 15px; border-radius: 8px; margin: 12px 0; overflow-x: auto; border-left: 4px solid #3b82f6;"><code style="color: #e5e7eb; font-family: Consolas, monospace;">$1</code></pre>')
+                        .replace(/`([^`]+)`/g, '<code style="background: #374151; color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace;">$1</code>')
+                        .replace(/^-\s+(.*$)/gim, '<li style="margin: 8px 0 8px 20px; position: relative; color: #d1d5db;">• $1</li>')
+                        .replace(/^\d+\.\s+(.*$)/gim, '<li style="margin: 8px 0 8px 20px; position: relative; color: #d1d5db;">$1</li>');
+                    
+                    output.innerHTML = formatted;
+                    
+                    // Atualizar informações da IA
+                    updateAIInfo(data);
+                    
+                    let statusMsg = ` Análise concluída (${data.provider || 'IA'})`;
+                    if (data.response_time) {
+                        statusMsg += ` em ${data.response_time}`;
+                    }
+                    showStatus(statusMsg, 'success');
+                    
+                } else {
+                    output.innerHTML = `
+                        <div style="color: #ef4444; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                            <strong> Erro na análise:</strong> ${data.error || 'Erro desconhecido'}
+                            ${data.details ? `<br><small style="color: #9ca3af;">${data.details}</small>` : ''}
+                        </div>`;
+                    showStatus(`Erro: ${data.error || 'Falha na análise'}`, 'error');
+                }
+                
+            } catch (error) {
+                loading.style.display = 'none';
+                output.innerHTML = `
+                    <div style="color: #ef4444; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                        <h4 style="margin-bottom: 10px;"> Erro de conexão</h4>
+                        <p>${error.message}</p>
+                        <div style="margin-top: 15px; font-size: 14px; color: #9ca3af;">
+                            <strong>Verifique:</strong>
+                            <ul style="margin: 8px 0 8px 20px;">
+                                <li>Servidor Flask está rodando?</li>
+                                <li>LM Studio está ativo (para modo local)?</li>
+                                <li>Tem conexão com internet (para modo online)?</li>
+                                <li>API_KEY configurada corretamente?</li>
+                            </ul>
+                        </div>
+                    </div>`;
+                showStatus(' Erro de conexão com o servidor', 'error');
+            }
+        }
+        
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            // Auto-esconder após 5 segundos
+            setTimeout(() => {
+                if (status.textContent === message) {
+                    status.style.display = 'none';
+                }
+            }, 5000);
+        }
+        
+        // Verificar serviços
+        async function checkServices() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                console.log('Serviços:', data);
+            } catch (error) {
+                console.log('Não foi possível verificar serviços');
+            }
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Foco automático no textarea
+            document.getElementById('codeInput').focus();
+            
+            // Enter para enviar (Shift+Enter para nova linha)
+            document.getElementById('codeInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    analyzeCode();
+                }
+                // Suporte legacy: Ctrl+Enter também envia
+                else if (e.ctrlKey && e.key === 'Enter') {
+                    analyzeCode();
+                }
+            });
+            
+            // Verificar serviços
+            checkServices();
+        });
+    </script>
+</body>
+</html>
