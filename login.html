@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevTutor — Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header igual ao index */
+        .header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #333;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 70px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #4a4a4a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        /* Área central */
+        .center {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* Card — mesmo estilo dos painéis do index */
+        .card {
+            background: #252525;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 36px 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Abas Login / Registar */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 8px 12px;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #aaa;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover { background: #3a3a3a; }
+
+        .tab.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        /* Formulário */
+        .form { display: flex; flex-direction: column; gap: 14px; }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 10px 14px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .field input:focus { border-color: #666; }
+
+        /* Botão igual ao send-button do index */
+        .btn-submit {
+            margin-top: 6px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .btn-submit:hover  { background: #2563eb; }
+        .btn-submit:active { transform: scale(0.98); }
+
+        /* Mensagem de erro/sucesso — igual ao .status do index */
+        .msg {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .msg.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .msg.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="icon.png" style="width:50px;height:50px;border-radius:50%;" onerror="this.style.display='none'">
+        <div class="title">DevTutor</div>
+    </div>
+
+    <div class="center">
+        <div class="card">
+
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('login')">Entrar</button>
+                <button class="tab"        onclick="switchTab('register')">Criar conta</button>
+            </div>
+
+            <!-- LOGIN -->
+            <div id="loginForm" class="form">
+                <div class="msg" id="loginMsg"></div>
+                <div class="field">
+                    <label>UTILIZADOR</label>
+                    <input type="text" id="loginUsername" placeholder="o teu username" autocomplete="username">
+                </div>
+                <div class="field">
+                    <label>PALAVRA-PASSE</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <button class="btn-submit" onclick="doLogin()">Entrar →</button>
+            </div>
+
+            <!-- REGISTO -->
+            <div id="registerForm" class="form" style="display:none">
+                <div class="msg" id="registerMsg"></div>
+                <div class="field">
+                    <label>NOME DE UTILIZADOR</label>
+                    <input type="text" id="regUsername" placeholder="mínimo 3 caracteres">
+                </div>
+                <div class="field">
+                    <label>EMAIL</label>
+                    <input type="email" id="regEmail" placeholder="email@exemplo.com">
+                </div>
+                <div class="field">
+                    <label>PALAVRA-PASSE</label>
+                    <input type="password" id="regPassword" placeholder="mínimo 6 caracteres">
+                </div>
+                <button class="btn-submit" onclick="doRegister()">Criar conta →</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000'
+            : window.location.origin;
+
+        // Se já tiver sessão ativa, redireciona direto para o index
+        async function checkSession() {
+            try {
+                const res = await fetch(`${API_URL}/auth/me`, { credentials: 'include' });
+                const data = await res.json();
+                if (data.success) window.location.href = 'index.html';
+            } catch (e) { /* sem sessão */ }
+        }
+        checkSession();
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach((t, i) => {
+                t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+            });
+            document.getElementById('loginForm').style.display    = tab === 'login'    ? 'flex' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'register' ? 'flex' : 'none';
+        }
+
+        function showMsg(id, message, type) {
+            const el = document.getElementById(id);
+            el.textContent = message;
+            el.className = `msg ${type}`;
+            el.style.display = 'block';
+        }
+
+        async function doLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            if (!username || !password) return showMsg('loginMsg', 'Preencha todos os campos', 'error');
+
+            try {
+                const res = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.href = 'index.html';
+                } else {
+                    showMsg('loginMsg', data.error, 'error');
+                }
+            } catch (e) {
+                showMsg('loginMsg', 'Erro de ligação ao servidor', 'error');
+            }
+        }
+
+        async function doRegister() {
+            const username = document.getElementById('regUsername').value.trim();
+            const email    = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            if (!username || !email || !password) return showMsg('registerMsg', 'Preencha todos os campos', 'error');
+
+            try {
+                const res = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, email, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showMsg('registerMsg', '✅ Conta criada! Podes fazer login agora.', 'success');
+                    setTimeout(() => switchTab('login'), 1600);
+                } else {
+                    showMsg('registerMsg', data.error, 'error');
+                }
+            } catch (e) {
+                showMsg('registerMsg', 'Erro de ligação ao servidor', 'error');
+            }
+        }
+
+        // Enter para submeter
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('loginPassword').addEventListener('keydown', e => {
+                if (e.key === 'Enter') doLogin();
+            });
+            document.getElementById('regPassword').addEventListener('keydown', e => {
+                if (e.key === 'Enter') doRegister();
+            });
+        });
+    </script>
+</body>
+</html>

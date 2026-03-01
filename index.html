@@ -48,11 +48,167 @@
             font-weight: 500;
             color: #fff;
         }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .btn-header {
+            padding: 6px 12px;
+            background: #252525;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .btn-header:hover { background: #333; color: #e0e0e0; }
+
+        .btn-header.toggle-active {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
         
         /* Container principal */
         .container {
             display: flex;
             height: calc(100vh - 70px);
+        }
+
+        /* ── SIDEBAR DE HISTÓRICO ── */
+        .sidebar {
+            width: 260px;
+            background: #1a1a1a;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow: hidden;
+            transition: width 0.25s ease;
+        }
+
+        .sidebar.collapsed { width: 0; }
+
+        .sidebar-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            color: #888;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .btn-clear-all {
+            padding: 4px 8px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #666;
+            font-size: 11px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .btn-clear-all:hover { border-color: #ef4444; color: #ef4444; }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .history-list::-webkit-scrollbar { width: 4px; }
+        .history-list::-webkit-scrollbar-track { background: transparent; }
+        .history-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+        .history-item {
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 4px;
+            border: 1px solid transparent;
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .history-item:hover { background: #252525; border-color: #444; }
+
+        .history-item.active {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .history-question {
+            font-size: 12px;
+            color: #e0e0e0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .history-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .history-badge {
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .badge-local  { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+        .badge-online { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+
+        .btn-delete-item {
+            position: absolute;
+            right: 8px; top: 50%;
+            transform: translateY(-50%);
+            background: rgba(239, 68, 68, 0.1);
+            border: none;
+            color: #ef4444;
+            border-radius: 4px;
+            width: 20px; height: 20px;
+            font-size: 11px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .history-item:hover .btn-delete-item { display: flex; }
+
+        .history-empty {
+            text-align: center;
+            padding: 32px 16px;
+            color: #555;
+            font-size: 13px;
+            line-height: 1.6;
         }
         
         /* Painel esquerdo - Entrada */
@@ -86,10 +242,7 @@
             font-size: 14px;
         }
         
-        .mode-buttons {
-            display: flex;
-            gap: 10px;
-        }
+        .mode-buttons { display: flex; gap: 10px; }
         
         .mode-btn {
             flex: 1;
@@ -104,9 +257,7 @@
             transition: all 0.2s;
         }
         
-        .mode-btn:hover {
-            background: #3a3a3a;
-        }
+        .mode-btn:hover { background: #3a3a3a; }
         
         .mode-btn.active {
             background: #3b82f6;
@@ -114,7 +265,6 @@
             border-color: #3b82f6;
         }
         
-        /* Área de entrada de código */
         .code-input {
             flex: 1;
             background: #252525;
@@ -130,9 +280,7 @@
             transition: border 0.2s;
         }
         
-        .code-input:focus {
-            border-color: #666;
-        }
+        .code-input:focus { border-color: #666; }
         
         .send-button {
             margin-top: 20px;
@@ -151,13 +299,9 @@
             gap: 8px;
         }
         
-        .send-button:hover {
-            background: #2563eb;
-        }
-        
-        .send-button:active {
-            transform: scale(0.98);
-        }
+        .send-button:hover  { background: #2563eb; }
+        .send-button:active { transform: scale(0.98); }
+        .send-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         
         /* Painel direito - Resposta */
         .response-area {
@@ -183,7 +327,6 @@
             line-height: 1.6;
         }
         
-        /* Informações da IA */
         .ai-info {
             margin-top: 12px;
             padding: 10px;
@@ -195,7 +338,6 @@
             display: none;
         }
         
-        /* Status */
         .status {
             margin-top: 12px;
             padding: 8px 12px;
@@ -216,7 +358,6 @@
             border: 1px solid rgba(239, 68, 68, 0.2);
         }
         
-        /* Loading */
         .loading {
             display: none;
             text-align: center;
@@ -243,43 +384,48 @@
         
         @keyframes bounce {
             0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+            40%            { transform: scale(1); }
         }
         
-        /* Responsividade */
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .code-area {
-                border-right: none;
-                border-bottom: 1px solid #333;
-                height: 50vh;
-            }
-            
-            .response-area {
-                height: 40vh;
-            }
-            
-            .mode-buttons {
-                flex-direction: column;
-            }
+            .sidebar { display: none; }
+            .container { flex-direction: column; }
+            .code-area { border-right: none; border-bottom: 1px solid #333; height: 50vh; }
+            .response-area { height: 40vh; }
+            .mode-buttons { flex-direction: column; }
         }
     </style>
 </head>
 <body>
+
     <div class="header">
-        <img src="icon.png" style="width: 50px; height: 50px; border-radius: 50%;">
+        <img src="icon.png" style="width:50px;height:50px;border-radius:50%;" onerror="this.style.display='none'">
         <div class="title">DevTutor</div>
+
+        <div class="header-right">
+            <span class="user-info" id="userInfo"></span>
+            <button class="btn-header" id="btnToggleHistory" onclick="toggleSidebar()"> Histórico</button>
+            <button class="btn-header" onclick="doLogout()">Sair</button>
+        </div>
     </div>
     
     <div class="container">
+
+        <!-- Sidebar de Histórico -->
+        <div class="sidebar collapsed" id="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-title">CONVERSAS ANTERIORES</span>
+                <button class="btn-clear-all" onclick="clearAllHistory()">Limpar tudo</button>
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="history-empty">Sem histórico ainda.</div>
+            </div>
+        </div>
+
         <!-- Painel Esquerdo: Entrada -->
         <div class="code-area">
             <div class="code-header">SEU CÓDIGO</div>
             
-            <!-- Seletor de Modo IA -->
             <div class="mode-selector">
                 <label> MODO IA:</label>
                 <div class="mode-buttons">
@@ -294,7 +440,7 @@
             
             <textarea class="code-input" id="codeInput" placeholder="Faça sua pergunta aqui..."></textarea>
             
-            <button class="send-button" onclick="analyzeCode()">
+            <button class="send-button" id="sendButton" onclick="analyzeCode()">
                 <span></span> Perguntar a IA
             </button>
             
@@ -303,8 +449,6 @@
         
         <!-- Painel Direito: Resposta -->
         <div class="response-area">
-            
-            
             <div class="response-output" id="responseOutput">
                 <div style="text-align: center; padding: 40px; color: #666;">
                     <div style="font-size: 48px; margin-bottom: 16px;"></div>
@@ -329,143 +473,230 @@
     </div>
 
     <script>
-        // Configuração automática da URL
         const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://localhost:5000' 
             : window.location.origin;
         
-        // Variáveis globais
         let currentMode = 'local';
+        let historyData = [];
+        let sidebarOpen = false;
+
+        // ═══════════════════════════
+        // SESSÃO
+        // ═══════════════════════════
+
+        async function checkSession() {
+            try {
+                const res  = await fetch(`${API_URL}/auth/me`, { credentials: 'include' });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('userInfo').textContent = '👤 ' + data.user.username;
+                    loadHistory();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } catch (e) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        async function doLogout() {
+            await fetch(`${API_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
+            window.location.href = 'login.html';
+        }
+
+        // ═══════════════════════════
+        // SIDEBAR
+        // ═══════════════════════════
+
+        function toggleSidebar() {
+            sidebarOpen = !sidebarOpen;
+            document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen);
+            document.getElementById('btnToggleHistory').classList.toggle('toggle-active', sidebarOpen);
+        }
+
+        // ═══════════════════════════
+        // HISTÓRICO
+        // ═══════════════════════════
+
+        async function loadHistory() {
+            try {
+                const res  = await fetch(`${API_URL}/history`, { credentials: 'include' });
+                const data = await res.json();
+                if (data.success) {
+                    historyData = data.history;
+                    renderHistory(historyData);
+                }
+            } catch (e) { /* silencioso */ }
+        }
+
+        function renderHistory(items) {
+            const list = document.getElementById('historyList');
+            if (!items.length) {
+                list.innerHTML = '<div class="history-empty">Sem histórico ainda.<br>Faz a primeira pergunta!</div>';
+                return;
+            }
+            list.innerHTML = items.map(item => {
+                const date  = new Date(item.created_at).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short' });
+                const time  = new Date(item.created_at).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+                const badge = item.mode === 'local'
+                    ? '<span class="history-badge badge-local">Local</span>'
+                    : '<span class="history-badge badge-online">Online</span>';
+                return `
+                    <div class="history-item" onclick="loadHistoryItem(${item.id}, event)">
+                        <div class="history-question">${escapeHtml(item.question)}</div>
+                        <div class="history-meta">${badge}<span>${date} ${time}</span></div>
+                        <button class="btn-delete-item" onclick="deleteHistoryItem(event, ${item.id})">✕</button>
+                    </div>`;
+            }).join('');
+        }
+
+        function loadHistoryItem(id, e) {
+            const item = historyData.find(h => h.id === id);
+            if (!item) return;
+
+            document.getElementById('codeInput').value = item.question;
+            document.getElementById('responseOutput').innerHTML = formatResponse(item.answer);
+
+            const aiInfo = document.getElementById('aiInfo');
+            if (item.provider) {
+                let info = ` ${item.provider}`;
+                if (item.response_time) info += ` |  ${item.response_time}`;
+                if (item.tokens_used)   info += ` |  ${item.tokens_used} tokens`;
+                aiInfo.textContent   = info;
+                aiInfo.style.display = 'block';
+            }
+
+            document.querySelectorAll('.history-item').forEach(el => el.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+        }
+
+        async function deleteHistoryItem(e, id) {
+            e.stopPropagation();
+            try {
+                await fetch(`${API_URL}/history/${id}`, { method: 'DELETE', credentials: 'include' });
+                await loadHistory();
+                showStatus('Item apagado', 'success');
+            } catch (e) {
+                showStatus('Erro ao apagar', 'error');
+            }
+        }
+
+        async function clearAllHistory() {
+            if (!confirm('Tens a certeza que queres apagar todo o histórico?')) return;
+            try {
+                await fetch(`${API_URL}/history/clear`, { method: 'DELETE', credentials: 'include' });
+                historyData = [];
+                renderHistory([]);
+                showStatus('Histórico limpo', 'success');
+            } catch (e) {
+                showStatus('Erro ao limpar histórico', 'error');
+            }
+        }
+
+        // ═══════════════════════════
+        // MODO IA
+        // ═══════════════════════════
         
-        // Funções de UI
         function selectMode(mode) {
             currentMode = mode;
-            
-            // Atualizar botões
             document.querySelectorAll('.mode-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.dataset.mode === mode) {
-                    btn.classList.add('active');
-                }
+                if (btn.dataset.mode === mode) btn.classList.add('active');
             });
-            
-            // Atualizar texto de loading
             const loadingText = document.getElementById('loadingText');
-            if (mode === 'local') {
-                loadingText.textContent = 'Analisando com IA Local...';
-            } else if (mode === 'online') {
-                loadingText.textContent = 'Analisando com OpenAI...';
-            }
-            
+            if (mode === 'local')  loadingText.textContent = 'Analisando com IA Local...';
+            if (mode === 'online') loadingText.textContent = 'Analisando com OpenAI...';
             showStatus(`Modo alterado: ${getModeName(mode)}`, 'success');
         }
         
         function getModeName(mode) {
-            const modes = {
-                'local': ' IA Local',
-                'online': ' IA Online'
-            };
-            return modes[mode] || mode;
+            return { local: ' IA Local', online: ' IA Online' }[mode] || mode;
         }
-        
+
         function updateAIInfo(data) {
             const aiInfo = document.getElementById('aiInfo');
             if (data.provider) {
                 let info = ` ${data.provider}`;
-                if (data.response_time) {
-                    info += ` |  ${data.response_time}`;
-                }
-                if (data.tokens_used) {
-                    info += ` |  ${data.tokens_used} tokens`;
-                }
-
-                aiInfo.textContent = info;
+                if (data.response_time) info += ` |  ${data.response_time}`;
+                if (data.tokens_used)   info += ` |  ${data.tokens_used} tokens`;
+                aiInfo.textContent   = info;
                 aiInfo.style.display = 'block';
             } else {
                 aiInfo.style.display = 'none';
             }
-        }   
+        }
         
-        // Função principal de análise
+        // ═══════════════════════════
+        // ANÁLISE PRINCIPAL
+        // ═══════════════════════════
+
         async function analyzeCode() {
-            const code = document.getElementById('codeInput').value.trim();
-            const output = document.getElementById('responseOutput');
+            const code    = document.getElementById('codeInput').value.trim();
+            const output  = document.getElementById('responseOutput');
             const loading = document.getElementById('loading');
-            const status = document.getElementById('status');
-            const aiInfo = document.getElementById('aiInfo');
+            const status  = document.getElementById('status');
+            const aiInfo  = document.getElementById('aiInfo');
+            const sendBtn = document.getElementById('sendButton');
             
             if (!code) {
                 showStatus('Por favor, digite algum código primeiro.', 'error');
                 return;
             }
             
-            // Limpar status anterior
-            status.style.display = 'none';
-            aiInfo.style.display = 'none';
-            
-            // Mostrar loading
+            status.style.display  = 'none';
+            aiInfo.style.display  = 'none';
             loading.style.display = 'block';
-            output.innerHTML = '';
+            output.innerHTML      = '';
+            sendBtn.disabled      = true;
+            document.getElementById('codeInput').value = '';
             
             try {
                 const response = await fetch(`${API_URL}/analyze`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        code: code,
-                        mode: currentMode  // ← ENVIA O MODO SELECIONADO
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ code, mode: currentMode })
                 });
+
+                if (response.status === 401) {
+                    window.location.href = 'login.html';
+                    return;
+                }
                 
                 const data = await response.json();
                 loading.style.display = 'none';
+                sendBtn.disabled      = false;
                 
                 if (data.success) {
-                    // Formatar resposta
-                    let formatted = data.analysis;
-                    
-                    // Formatação markdown
-                    formatted = formatted
-                        .replace(/^# (.*$)/gim, '<h3 style="color: #3b82f6; margin: 20px 0 10px 0; font-size: 1.2rem;">$1</h3>')
-                        .replace(/^## (.*$)/gim, '<h4 style="color: #60a5fa; margin: 15px 0 8px 0; font-size: 1.1rem;">$1</h4>')
-                        .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #fbbf24;">$1</strong>')
-                        .replace(/\n/g, '<br>')
-                        .replace(/```([\s\S]*?)```/gs, '<pre style="background: #1f2937; padding: 15px; border-radius: 8px; margin: 12px 0; overflow-x: auto; border-left: 4px solid #3b82f6;"><code style="color: #e5e7eb; font-family: Consolas, monospace;">$1</code></pre>')
-                        .replace(/`([^`]+)`/g, '<code style="background: #374151; color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace;">$1</code>')
-                        .replace(/^-\s+(.*$)/gim, '<li style="margin: 8px 0 8px 20px; position: relative; color: #d1d5db;">• $1</li>')
-                        .replace(/^\d+\.\s+(.*$)/gim, '<li style="margin: 8px 0 8px 20px; position: relative; color: #d1d5db;">$1</li>');
-                    
-                    output.innerHTML = formatted;
-                    
-                    // Atualizar informações da IA
+                    output.innerHTML = formatResponse(data.analysis);
                     updateAIInfo(data);
                     
                     let statusMsg = ` Análise concluída (${data.provider || 'IA'})`;
-                    if (data.response_time) {
-                        statusMsg += ` em ${data.response_time}`;
-                    }
+                    if (data.response_time) statusMsg += ` em ${data.response_time}`;
                     showStatus(statusMsg, 'success');
+
+                    await loadHistory();
                     
                 } else {
                     output.innerHTML = `
-                        <div style="color: #ef4444; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                        <div style="color:#ef4444;padding:20px;background:rgba(239,68,68,.1);border-radius:8px;border:1px solid rgba(239,68,68,.2)">
                             <strong> Erro na análise:</strong> ${data.error || 'Erro desconhecido'}
-                            ${data.details ? `<br><small style="color: #9ca3af;">${data.details}</small>` : ''}
+                            ${data.details ? `<br><small style="color:#9ca3af">${data.details}</small>` : ''}
                         </div>`;
                     showStatus(`Erro: ${data.error || 'Falha na análise'}`, 'error');
                 }
                 
             } catch (error) {
                 loading.style.display = 'none';
+                sendBtn.disabled      = false;
                 output.innerHTML = `
-                    <div style="color: #ef4444; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);">
-                        <h4 style="margin-bottom: 10px;"> Erro de conexão</h4>
+                    <div style="color:#ef4444;padding:20px;background:rgba(239,68,68,.1);border-radius:8px;border:1px solid rgba(239,68,68,.2)">
+                        <h4 style="margin-bottom:10px"> Erro de conexão</h4>
                         <p>${error.message}</p>
-                        <div style="margin-top: 15px; font-size: 14px; color: #9ca3af;">
+                        <div style="margin-top:15px;font-size:14px;color:#9ca3af">
                             <strong>Verifique:</strong>
-                            <ul style="margin: 8px 0 8px 20px;">
+                            <ul style="margin:8px 0 8px 20px">
                                 <li>Servidor Flask está rodando?</li>
                                 <li>LM Studio está ativo (para modo local)?</li>
                                 <li>Tem conexão com internet (para modo online)?</li>
@@ -476,51 +707,54 @@
                 showStatus(' Erro de conexão com o servidor', 'error');
             }
         }
+
+        // ═══════════════════════════
+        // UTILITÁRIOS
+        // ═══════════════════════════
         
+        function formatResponse(text) {
+            return text
+                .replace(/^# (.*$)/gim,  '<h3 style="color:#3b82f6;margin:20px 0 10px 0;font-size:1.2rem">$1</h3>')
+                .replace(/^## (.*$)/gim, '<h4 style="color:#60a5fa;margin:15px 0 8px 0;font-size:1.1rem">$1</h4>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#fbbf24">$1</strong>')
+                .replace(/\n/g, '<br>')
+                .replace(/```([\s\S]*?)```/gs, '<pre style="background:#1f2937;padding:15px;border-radius:8px;margin:12px 0;overflow-x:auto;border-left:4px solid #3b82f6"><code style="color:#e5e7eb;font-family:Consolas,monospace">$1</code></pre>')
+                .replace(/`([^`]+)`/g, '<code style="background:#374151;color:#fbbf24;padding:2px 6px;border-radius:4px;font-family:Consolas,monospace">$1</code>')
+                .replace(/^-\s+(.*$)/gim, '<li style="margin:8px 0 8px 20px;color:#d1d5db">• $1</li>')
+                .replace(/^\d+\.\s+(.*$)/gim, '<li style="margin:8px 0 8px 20px;color:#d1d5db">$1</li>');
+        }
+
         function showStatus(message, type) {
             const status = document.getElementById('status');
-            status.textContent = message;
-            status.className = `status ${type}`;
+            status.textContent   = message;
+            status.className     = `status ${type}`;
             status.style.display = 'block';
-            
-            // Auto-esconder após 5 segundos
             setTimeout(() => {
-                if (status.textContent === message) {
-                    status.style.display = 'none';
-                }
+                if (status.textContent === message) status.style.display = 'none';
             }, 5000);
         }
-        
-        // Verificar serviços
-        async function checkServices() {
-            try {
-                const response = await fetch(`${API_URL}/health`);
-                const data = await response.json();
-                console.log('Serviços:', data);
-            } catch (error) {
-                console.log('Não foi possível verificar serviços');
-            }
+
+        function escapeHtml(text) {
+            const d = document.createElement('div');
+            d.textContent = text;
+            return d.innerHTML;
         }
         
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Foco automático no textarea
+        // ═══════════════════════════
+        // INIT
+        // ═══════════════════════════
+
+        document.addEventListener('DOMContentLoaded', function () {
+            checkSession();
             document.getElementById('codeInput').focus();
-            
-            // Enter para enviar (Shift+Enter para nova linha)
-            document.getElementById('codeInput').addEventListener('keydown', function(e) {
+            document.getElementById('codeInput').addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     analyzeCode();
-                }
-                // Suporte legacy: Ctrl+Enter também envia
-                else if (e.ctrlKey && e.key === 'Enter') {
+                } else if (e.ctrlKey && e.key === 'Enter') {
                     analyzeCode();
                 }
             });
-            
-            // Verificar serviços
-            checkServices();
         });
     </script>
 </body>
