@@ -265,10 +265,10 @@ def clear_history():
 
 @app.route('/health')
 def health_check():
-    services = {"flask": " Online", "lm_studio": "❌ Offline", "openai": "❌ Offline"}
+    services = {"flask": " Online", "lm_studio": " Offline", "openai": " Offline"}
     try:
         lm_test = requests.get("http://localhost:1234/v1/models", timeout=5)
-        services["lm_studio"] = " Online" if lm_test.status_code == 200 else "❌ Offline"
+        services["lm_studio"] = " Online" if lm_test.status_code == 200 else " Offline"
     except:
         pass
     try:
@@ -278,7 +278,7 @@ def health_check():
             json={"model": OPENAI_MODEL, "messages": [{"role": "user", "content": "test"}], "max_tokens": 1},
             timeout=5
         )
-        services["openai"] = " Online" if test_response.status_code == 200 else "❌ Offline"
+        services["openai"] = " Online" if test_response.status_code == 200 else " Offline"
     except:
         pass
     return jsonify({**services, "timestamp": datetime.now().strftime("%H:%M:%S"), "system": "DevTutor"})
