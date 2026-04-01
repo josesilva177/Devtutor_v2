@@ -58,7 +58,7 @@ devtutor/
 
 **1. Clonar o repositório**
 ```bash
-git clone https://github.com/SEU-UTILIZADOR/devtutor.git
+git clone https://github.com/josesilva177/Devtutor_v2.git
 cd devtutor
 ```
 
