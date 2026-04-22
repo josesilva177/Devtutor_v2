@@ -8,7 +8,6 @@ from config import Config
 from database import init_db, create_user, login_user, save_history, get_history, delete_history_item, clear_all_history
 
 
-
 OPENAI_API_KEY = Config.OPENAI_API_KEY
 if not Config.OPENAI_API_KEY:
     print(" ERRO: OPENAI_API_KEY não definida!")
@@ -18,6 +17,49 @@ LM_MODEL = "deepseek-coder"
 
 OPENAI_URL = "https://api.openai.com/v1/chat/completions"
 OPENAI_MODEL = "gpt-3.5-turbo"
+
+NIM_API_KEY = Config.NIM_API_KEY
+NIM_URL = Config.NIM_URL
+NIM_MODEL = Config.NIM_MODEL
+
+def analyze_with_nim(code):
+    try:
+        start_time = time.time()
+        prompt = f"""Como tutor de programação responda essa pergunta: {code}"""
+        response = requests.post(
+            NIM_URL,
+            headers={
+                "Authorization": f"Bearer {NIM_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": NIM_MODEL,
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 1024,
+                "temperature": 0.7
+            },
+            timeout=60
+        )
+        elapsed = time.time() - start_time
+        if response.status_code == 200:
+            result = response.json()
+            analysis = result["choices"][0]["message"]["content"]
+            tokens = result.get("usage", {}).get("total_tokens", 0)
+            return {
+                "success": True,
+                "analysis": analysis,
+                "provider": f"NVIDIA NIM ({NIM_MODEL})",
+                "model": NIM_MODEL,
+                "response_time": f"{elapsed:.1f}s",
+                "tokens_used": tokens,
+            }
+        error_msg = response.text[:200] if response.text else "Sem detalhes"
+        return {"success": False, "error": f"NIM erro {response.status_code}", "provider": "NVIDIA NIM", "details": error_msg}
+    except requests.exceptions.Timeout:
+        return {"success": False, "error": "NVIDIA NIM demorou muito (>60s)", "provider": "NVIDIA NIM"}
+    except Exception as e:
+        return {"success": False, "error": f"Erro NIM: {str(e)}", "provider": "NVIDIA NIM"}
+
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "devtutor-secret-key-2024")
@@ -200,6 +242,8 @@ def analyze_code():
             result = analyze_with_local(code)
         elif mode == 'online':
             result = analyze_with_openai(code)
+        elif mode == 'nim':
+            result = analyze_with_nim(code)
         else:
             return jsonify({"success": False, "error": "Modo inválido. Use 'local' ou 'online'"}), 400
 
@@ -278,7 +322,7 @@ def health_check():
             json={"model": OPENAI_MODEL, "messages": [{"role": "user", "content": "test"}], "max_tokens": 1},
             timeout=5
         )
-        services["openai"] = " Online" if test_response.status_code == 200 else "❌ Offline"
+        services["openai"] = " Online" if test_response.status_code == 200 else " Offline"
     except:
         pass
     return jsonify({**services, "timestamp": datetime.now().strftime("%H:%M:%S"), "system": "DevTutor"})
@@ -327,9 +371,6 @@ def check_initial_config():
 
 if __name__ == '__main__':
     check_initial_config()
-    print("\n" + "=" * 60)
-    print("DEVTUTOR v2.0 — COM LOGIN E HISTÓRICO")
-    print("=" * 60)
     print(f"  • Interface:  http://localhost:5000/")
     print(f"  • API:        http://localhost:5000/analyze")
     print(f"  • Saúde:      http://localhost:5000/health")
