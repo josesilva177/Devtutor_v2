@@ -10,6 +10,7 @@ DevTutor é uma aplicação web que utiliza modelos de linguagem de grande escal
 
 - **Modo local** — inferência com o modelo DeepSeek Coder via LM Studio (sem internet, sem custos)
 - **Modo online** — inferência com GPT-3.5 Turbo via API da OpenAI
+- **Modo Nvidia NIM** — inferência com MINIMax  via API da NVIDIA.
 - **Sistema de autenticação** — registo, login e sessões seguras
 - **Histórico de conversas** — guardado por utilizador na base de dados
 - **Interface dark mode** — design clean e confortável para programadores
