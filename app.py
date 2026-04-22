@@ -309,10 +309,10 @@ def clear_history():
 
 @app.route('/health')
 def health_check():
-    services = {"flask": " Online", "lm_studio": "❌ Offline", "openai": "❌ Offline"}
+    services = {"flask": " Online", "lm_studio": " Offline", "openai": " Offline"}
     try:
         lm_test = requests.get("http://localhost:1234/v1/models", timeout=5)
-        services["lm_studio"] = " Online" if lm_test.status_code == 200 else "❌ Offline"
+        services["lm_studio"] = " Online" if lm_test.status_code == 200 else " Offline"
     except:
         pass
     try:
